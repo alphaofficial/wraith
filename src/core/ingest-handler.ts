@@ -1,11 +1,11 @@
 import * as fs from 'node:fs';
 import pdf from 'pdf-parse'
-import { Embedder } from "../ports/Embedder";
+import { Embeder } from "../ports/Embedder";
 import * as path from 'node:path';
 import { VectorStore, DocumentChunk } from '../ports/VectorStore';
 
 export class IngestHandler {
-  constructor(private readonly vectorStore: VectorStore, private readonly embeder: Embedder) {}
+  constructor(private readonly vectorStore: VectorStore, private readonly embeder: Embeder) {}
 
   private isDirectory(pathName: string): boolean {
     try {
@@ -31,7 +31,7 @@ export class IngestHandler {
         const stats = fs.statSync(fullPath);
 
         if (stats.isDirectory()) {
-          processDirectory(fullPath); // Recursive
+          processDirectory(fullPath);
         } else if (this.isPdfFile(fullPath)) {
           pdfFiles.push(fullPath);
         }
@@ -115,15 +115,15 @@ export class IngestHandler {
     }
 
     let filesToProcess: string[] = [];
-    
+
     if (this.isDirectory(normalizedPath)) {
       console.log(`📁 Processing directory: ${normalizedPath}`);
       filesToProcess = await this.getAllPdfFiles(normalizedPath);
-      
+
       if (filesToProcess.length === 0) {
         throw new Error(`No PDF files found in directory: ${normalizedPath}`);
       }
-      
+
       console.log(`📄 Found ${filesToProcess.length} PDF files:`);
       filesToProcess.forEach(file => console.log(`  - ${path.basename(file)}`));
     } else {
@@ -136,10 +136,10 @@ export class IngestHandler {
 
     let successfulFiles = 0;
     let skippedFiles = 0;
-    
+
     for (const filePath of filesToProcess) {
       console.log(`🔄 Processing: ${path.basename(filePath)}`);
-      
+
       try {
         const content = await this.extractTextFromPdf(filePath);
         if (!content.trim()) {
@@ -147,18 +147,18 @@ export class IngestHandler {
           skippedFiles++;
           continue;
         }
-        
+
         console.log(`📝 Extracted ${content.length} characters from ${path.basename(filePath)}`);
-        
+
         const chunks = await this.getChunks(filePath, content, chunkSize);
         console.log(`📦 Created ${chunks.length} chunks from ${path.basename(filePath)}`);
-        
+
         const documentChunks: DocumentChunk[] = [];
-        
+
         for (let i = 0; i < chunks.length; i++) {
           const chunk = chunks[i];
           const embedding = await this.embeder.getEmbeddings(chunk.text);
-          
+
           documentChunks.push({
             content: chunk.text,
             embedding,
@@ -168,7 +168,6 @@ export class IngestHandler {
           });
         }
 
-        // Insert chunks for this file individually to isolate errors
         try {
           console.log(`💾 Inserting ${documentChunks.length} chunks from ${path.basename(filePath)}`);
           await this.vectorStore.insertDocuments(documentChunks);
@@ -184,7 +183,7 @@ export class IngestHandler {
             skippedFiles++;
           }
         }
-        
+
       } catch (fileError: any) {
         console.error(`❌ Error processing ${path.basename(filePath)}:`, fileError.message);
         skippedFiles++;

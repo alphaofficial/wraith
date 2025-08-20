@@ -1,7 +1,7 @@
 import { pipeline, FeatureExtractionPipeline } from '@xenova/transformers';
-import { Embedder } from '../ports/Embedder';
+import { Embeder } from '../ports/Embedder';
 
-export class LocalEmbedder implements Embedder {
+export class LocalEmbedder implements Embeder {
   private model: FeatureExtractionPipeline | null = null;
   private readonly modelName = 'Xenova/all-MiniLM-L6-v2';
 

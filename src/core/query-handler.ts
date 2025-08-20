@@ -1,9 +1,9 @@
 import { VectorStore } from "../ports/VectorStore";
 import { LLM } from "../ports/LLM";
-import { Embedder } from "../ports/Embedder";
+import { Embeder } from "../ports/Embedder";
 
 export class QueryHandler {
-  constructor(private readonly vectorStore: VectorStore, private readonly embedder: Embedder, private readonly llm: LLM) {}
+  constructor(private readonly vectorStore: VectorStore, private readonly embedder: Embeder, private readonly llm: LLM) {}
 
   async run(question: string): Promise<{ answer: string, sources: string[] }> {
     const queryEmbedding = await this.embedder.getEmbeddings(question);

@@ -42,7 +42,7 @@ program
         spinner.stop();
         logger.success('✅ Documents ingested successfully');
         await vectorStore.close();
-        await embeder.close(); // Clean up local model
+        await embeder.close();
         process.exit(0);
     })
 
@@ -74,9 +74,9 @@ program
                 logger.error(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
             }
         }
-        
+
         await vectorStore.close();
-        await embeder.close(); // Clean up local model
+        await embeder.close();
         process.exit(0);
     })
 

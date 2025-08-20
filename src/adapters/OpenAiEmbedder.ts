@@ -1,7 +1,7 @@
 import OpenAI from 'openai';
-import { Embedder } from '../ports/Embedder';
+import { Embeder } from '../ports/Embedder';
 
-export class OpenAiEmbedder implements Embedder {
+export class OpenAiEmbedder implements Embeder {
     private readonly client: OpenAI;
 
     constructor() {

@@ -77,3 +77,6 @@ CREATE INDEX documents_embedding_idx ON documents USING hnsw (embedding vector_c
 CREATE INDEX documents_source_idx ON documents(source);
 CREATE INDEX documents_created_at_idx ON documents(created_at);
 ```
+
+
+### Troubleshooting
